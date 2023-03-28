@@ -10,7 +10,7 @@
     "dist_url": "https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint src",
     "build": "npm run lint && vite build"
   },
   "dependencies": {
