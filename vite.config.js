@@ -1,8 +1,8 @@
-import stimulusNWFHtmlDefineObj from './fadh-stimulus-components/prebuildable-stimulus-components';
+import stimulusNWFHtmlDefineObj from './src/fadh-stimulus-components/prebuildable-stimulus-components';
 import {buildMatchPatterns} from './banner-build-util';
 import banner from 'vite-plugin-banner';
 import packageConfig from './package.json';
-import beautifyPlugin from "./vite-plugin-beautify-output";
+import beautifyPlugin from './vite-plugin-beautify-output';
 
 
 const postButtonLabel = 'Flag and remove';
@@ -43,7 +43,7 @@ export default () => {
         build: {
             rollupOptions: {
                 input: {
-                    main: `${fileNameBase}.user.ts`
+                    main: `src/${fileNameBase}.user.ts`
                 },
                 output: {
                     format: 'iife',
