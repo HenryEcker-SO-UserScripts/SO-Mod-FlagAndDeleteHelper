@@ -13,8 +13,8 @@ const bannerText = `// ==UserScript==
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
 // @version      ${packageConfig.version}
-// @downloadURL  ${packageConfig.repository.dist_url}/FlagAndDeleteHelper.user.js
-// @updateURL    ${packageConfig.repository.dist_url}/FlagAndDeleteHelper.user.js
+// @downloadURL  ${packageConfig.repository.dist_url}FlagAndDeleteHelper.user.js
+// @updateURL    ${packageConfig.repository.dist_url}FlagAndDeleteHelper.user.js
 //
 ${buildMatchPatterns('// @match        ', '/questions/*')}
 //
