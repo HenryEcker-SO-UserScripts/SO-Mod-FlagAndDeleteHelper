@@ -6,6 +6,7 @@ import beautifyPlugin from './vite-plugin-beautify-output';
 
 
 const postButtonLabel = 'Flag and remove';
+const fileNameBase = 'FlagAndDeleteHelper';
 
 const bannerText = `// ==UserScript==
 // @name         SE post flag and delete helper 
@@ -13,8 +14,8 @@ const bannerText = `// ==UserScript==
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
 // @version      ${packageConfig.version}
-// @downloadURL  ${packageConfig.repository.dist_url}FlagAndDeleteHelper.user.js
-// @updateURL    ${packageConfig.repository.dist_url}FlagAndDeleteHelper.user.js
+// @downloadURL  ${packageConfig.repository.dist_url}${fileNameBase}.user.js
+// @updateURL    ${packageConfig.repository.dist_url}${fileNameBase}.user.js
 //
 ${buildMatchPatterns('// @match        ', '/questions/*')}
 //
@@ -26,8 +27,6 @@ ${buildMatchPatterns('// @match        ', '/questions/*')}
 /* globals StackExchange, Stacks, $ */`;
 
 export default () => {
-    const fileNameBase = 'FlagAndDeleteHelper';
-
     return {
         plugins: [
             beautifyPlugin({
