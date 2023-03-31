@@ -19,6 +19,8 @@ const bannerText = `// ==UserScript==
 //
 ${buildMatchPatterns('// @match        ', '/questions/*')}
 //
+${buildMatchPatterns('// @exclude        ', '/questions/ask*')}
+//
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_deleteValue

@@ -1,6 +1,6 @@
 {
   "name": "flag-and-delete-helper",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Henry Ecker (https://github.com/HenryEcker)",
   "description": "Help document mod deletions via flags and comments",
   "repository": {
@@ -11,7 +11,10 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "build": "npm run lint && vite build"
+    "build": "npm run lint && vite build",
+    "bump-patch": "npm --no-git-tag-version version patch && npm run build",
+    "bump-minor": "npm --no-git-tag-version version minor && npm run build",
+    "bump-major": "npm --no-git-tag-version version major && npm run build"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.1",
