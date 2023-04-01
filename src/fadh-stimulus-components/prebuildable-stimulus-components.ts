@@ -103,7 +103,8 @@ function buildTextarea(
                id="${textareaId}" 
                name="${textareaName}" 
                rows="${rows}" 
-               data-${dataController}-target="${dataTarget}"></textarea>
+               data-${dataController}-target="${dataTarget}"
+               data-action="uhtr-size-reducer#handleReduceAction"></textarea>
      <div data-se-char-counter-target="output"></div>
 </div>`;
 }
@@ -135,7 +136,7 @@ const nukeWithFlagForm = `
        data-s-modal-target="modal">
     <div class="s-modal--dialog" style="min-width:550px; width: max-content; max-width: 65vw;" 
          role="document" 
-         data-controller="${data.controller} se-draggable"
+         data-controller="${data.controller} se-draggable uhtr-size-reducer"
          data-${data.controller}-post-id-value="{postId}">
         <h1 class="s-modal--header c-move" data-se-draggable-target="handle">Flag and remove {postId}</h1>
         <div class="s-modal--body" style="margin-bottom: 0;">
