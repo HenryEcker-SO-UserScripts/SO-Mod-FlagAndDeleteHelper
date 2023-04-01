@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.8
+// @version      0.0.9
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -238,12 +238,22 @@
                 this._hideTargetDiv("comment-info-areaTarget");
             }
         },
+        _setupCharCounter(taTarget, bounds) {
+            const jTextarea = $(this[taTarget]);
+            jTextarea.charCounter({
+                ...bounds,
+                target: jTextarea.parent().find("span.text-counter")
+            });
+        },
         connect() {
             const loadedConfig = JSON.parse(
                 GM_getValue(gmConfigKey, defaultFlagTemplateConfig)
             );
             this._setupFlagUI(loadedConfig.flagType, loadedConfig.flagDetailTemplate);
             this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
+            this._setupCharCounter("plagiarism-detail-areaTarget", plagiarismFlagLengthBounds.explanation);
+            this._setupCharCounter("mod-flag-areaTarget", modFlagTextLengthBounds);
+            this._setupCharCounter("comment-areaTarget", commentTextLengthBounds);
         },
         _assertValidCharacterLengths(flagType) {
             if (flagType === "mod-flag") {
@@ -315,8 +325,10 @@
         handleDeleteCurrentConfig(ev) {
             ev.preventDefault();
             GM_deleteValue(gmConfigKey);
-            this.connect();
             StackExchange.helpers.showToast("The saved configuration has been wiped. The form will now open in the default state until a new configuration is saved.", { type: "info" });
+            const defaultConfig = JSON.parse(defaultFlagTemplateConfig);
+            this._setupFlagUI(defaultConfig.flagType, defaultConfig.flagDetailTemplate);
+            this._setupCommentUI(defaultConfig.enableComment, defaultConfig.commentTextTemplate);
         }
     };
     async function handleNukeAsModFlag(postId, otherText) {
@@ -370,10 +382,10 @@
                     </div>
                 </fieldset>
                 <div class="d-flex fd-column g8 d-none" data-fadh-nuke-post-form-target="mod-flag-info-area">
-                    <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="10" data-se-char-counter-max="500">
+                    <div class="d-flex ff-column-nowrap gs4 gsy">
                         <label class="s-label flex--item" for="fadh-mod-flag-area-{postId}">A problem that requires action by a moderator.</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-mod-flag-area-{postId}" name="otherText" rows="5" data-fadh-nuke-post-form-target="mod-flag-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
-                        <div data-se-char-counter-target="output"></div>
+                        <textarea class="flex--item s-textarea" id="fadh-mod-flag-area-{postId}" name="otherText" rows="5" data-fadh-nuke-post-form-target="mod-flag-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
+                        <span class="text-counter"></span>
                     </div>
                 </div>
                 <div class="d-flex fd-column g8 d-none" data-fadh-nuke-post-form-target="plagiarism-flag-info-area">
@@ -385,10 +397,10 @@
                             <input type="text" id="fadh-plagiarism-original-source-area-{postId}" class="s-input" name="plagiarizedSource" data-fadh-nuke-post-form-target="plagiarism-original-source-area">
                         </div>
                     </div>
-                    <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="10" data-se-char-counter-max="500">
+                    <div class="d-flex ff-column-nowrap gs4 gsy">
                         <label class="s-label flex--item" for="fadh-plagiarism-detail-area-{postId}">Why do you consider this answer to be plagiarized?</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-plagiarism-detail-area-{postId}" name="plagiarizedExplanation" rows="5" data-fadh-nuke-post-form-target="plagiarism-detail-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
-                        <div data-se-char-counter-target="output"></div>
+                        <textarea class="flex--item s-textarea" id="fadh-plagiarism-detail-area-{postId}" name="plagiarizedExplanation" rows="5" data-fadh-nuke-post-form-target="plagiarism-detail-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
+                        <span class="text-counter"></span>
                     </div>
                 </div>
                 <div class="my6 bb bc-black-400"></div>
@@ -397,10 +409,10 @@
                     <input class="s-toggle-switch" id="fadh-comment-enable-toggle-{postId}" data-fadh-nuke-post-form-target="comment-enable-toggle" data-action="change->fadh-nuke-post-form#handleUpdateCommentControlledField" type="checkbox">
                 </div>
                 <div class="d-flex fd-column g8 d-none" data-fadh-nuke-post-form-target="comment-info-area">
-                    <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="15" data-se-char-counter-max="600">
+                    <div class="d-flex ff-column-nowrap gs4 gsy">
                         <label class="s-label flex--item" for="fadh-comment-area-{postId}">Comment Text</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-comment-area-{postId}" name="comment text" rows="5" data-fadh-nuke-post-form-target="comment-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
-                        <div data-se-char-counter-target="output"></div>
+                        <textarea class="flex--item s-textarea" id="fadh-comment-area-{postId}" name="comment text" rows="5" data-fadh-nuke-post-form-target="comment-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
+                        <span class="text-counter"></span>
                     </div>
                 </div>
             </div>

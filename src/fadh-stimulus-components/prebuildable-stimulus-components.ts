@@ -1,10 +1,5 @@
 import {type ModFlagRadioType} from '../Globals';
 import {html_beautify} from 'js-beautify';
-import {
-    commentTextLengthBounds,
-    modFlagTextLengthBounds,
-    plagiarismFlagLengthBounds
-} from 'se-ts-userscript-utilities/cjs/Validators/TextLengthValidators';
 
 const ids = {
     modal: 'fadh-nuke-post-form-{postId}',
@@ -88,24 +83,18 @@ function buildToggle(labelText: string, inputId: string, dataController: string,
 function buildTextarea(
     textareaId: string | number, textareaName: string, rows: string | number,
     dataController: string, dataTarget: string,
-    labelText: string,
-    vB: { min: number; max: number; }
+    labelText: string
 ) {
     return `
-<div class="d-flex ff-column-nowrap gs4 gsy" 
-     data-controller="se-char-counter"
-     data-se-char-counter-min="${vB.min}"
-     data-se-char-counter-max="${vB.max}">
+<div class="d-flex ff-column-nowrap gs4 gsy">
      <label class="s-label flex--item" for="${textareaId}">${labelText}</label>
-     <textarea class="flex--item s-textarea" 
-               data-se-char-counter-target="field" 
-               data-is-valid-length="false" 
+     <textarea class="flex--item s-textarea"
                id="${textareaId}" 
                name="${textareaName}" 
                rows="${rows}" 
                data-${dataController}-target="${dataTarget}"
                data-action="uhtr-size-reducer#handleReduceAction"></textarea>
-     <div data-se-char-counter-target="output"></div>
+     <span class="text-counter"></span>
 </div>`;
 }
 
@@ -174,8 +163,7 @@ ${buildFieldControlArea(
         5,
         data.controller,
         data.target.modFlagTextarea,
-        'A problem that requires action by a moderator.',
-        modFlagTextLengthBounds),
+        'A problem that requires action by a moderator.'),
     true)
 }
 ${buildFieldControlArea(
@@ -193,8 +181,7 @@ ${buildFieldControlArea(
         5,
         data.controller,
         data.target.plagiarismFlagDetailTextarea,
-        'Why do you consider this answer to be plagiarized?',
-        plagiarismFlagLengthBounds.explanation),
+        'Why do you consider this answer to be plagiarized?'),
     true)
 }
 ${modalDivider}
@@ -212,8 +199,7 @@ ${buildToggle(
         5,
         data.controller,
         data.target.commentTextarea,
-        'Comment Text',
-        commentTextLengthBounds),
+        'Comment Text'),
     true
 )}</div>
         </div>

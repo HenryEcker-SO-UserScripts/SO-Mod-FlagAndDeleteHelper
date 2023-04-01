@@ -1,3 +1,16 @@
+// Add StackExchange's Jquery Extension
+interface CharCounterOptions {
+    min: number;
+    max: number;
+    setIsValid?: (b: boolean) => void;
+    target?: JQuery | HTMLElement;
+    startAt?: number;
+}
+
+interface JQuery {
+    charCounter: (options: CharCounterOptions) => JQuery;
+}
+// Vite define
 declare const SUPPORTS_PLAGIARISM_FLAG_TYPE: number[];
 declare const JS_MODAL_ID: string;
 declare const NUKE_FORM: string;
