@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.7
+// @version      0.0.8
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -354,7 +354,7 @@
         } else {
             $("body").append(`
 <aside class="s-modal s-modal__danger" id="{modalId}" tabindex="-1" role="dialog" aria-hidden="true" data-controller="s-modal" data-s-modal-target="modal">
-    <div class="s-modal--dialog" style="min-width:550px; width: max-content; max-width: 65vw;" role="document" data-controller="fadh-nuke-post-form se-draggable" data-fadh-nuke-post-form-post-id-value="{postId}">
+    <div class="s-modal--dialog" style="min-width:550px; width: max-content; max-width: 65vw;" role="document" data-controller="fadh-nuke-post-form se-draggable uhtr-size-reducer" data-fadh-nuke-post-form-post-id-value="{postId}">
         <h1 class="s-modal--header c-move" data-se-draggable-target="handle">Flag and remove {postId}</h1>
         <div class="s-modal--body" style="margin-bottom: 0;">
             <div class="d-flex fd-column g12">
@@ -372,7 +372,7 @@
                 <div class="d-flex fd-column g8 d-none" data-fadh-nuke-post-form-target="mod-flag-info-area">
                     <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="10" data-se-char-counter-max="500">
                         <label class="s-label flex--item" for="fadh-mod-flag-area-{postId}">A problem that requires action by a moderator.</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-mod-flag-area-{postId}" name="otherText" rows="5" data-fadh-nuke-post-form-target="mod-flag-area"></textarea>
+                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-mod-flag-area-{postId}" name="otherText" rows="5" data-fadh-nuke-post-form-target="mod-flag-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
                         <div data-se-char-counter-target="output"></div>
                     </div>
                 </div>
@@ -387,7 +387,7 @@
                     </div>
                     <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="10" data-se-char-counter-max="500">
                         <label class="s-label flex--item" for="fadh-plagiarism-detail-area-{postId}">Why do you consider this answer to be plagiarized?</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-plagiarism-detail-area-{postId}" name="plagiarizedExplanation" rows="5" data-fadh-nuke-post-form-target="plagiarism-detail-area"></textarea>
+                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-plagiarism-detail-area-{postId}" name="plagiarizedExplanation" rows="5" data-fadh-nuke-post-form-target="plagiarism-detail-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
                         <div data-se-char-counter-target="output"></div>
                     </div>
                 </div>
@@ -399,7 +399,7 @@
                 <div class="d-flex fd-column g8 d-none" data-fadh-nuke-post-form-target="comment-info-area">
                     <div class="d-flex ff-column-nowrap gs4 gsy" data-controller="se-char-counter" data-se-char-counter-min="15" data-se-char-counter-max="600">
                         <label class="s-label flex--item" for="fadh-comment-area-{postId}">Comment Text</label>
-                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-comment-area-{postId}" name="comment text" rows="5" data-fadh-nuke-post-form-target="comment-area"></textarea>
+                        <textarea class="flex--item s-textarea" data-se-char-counter-target="field" data-is-valid-length="false" id="fadh-comment-area-{postId}" name="comment text" rows="5" data-fadh-nuke-post-form-target="comment-area" data-action="uhtr-size-reducer#handleReduceAction"></textarea>
                         <div data-se-char-counter-target="output"></div>
                     </div>
                 </div>

@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "removeComments": false,
     "target": "esnext",
+    "moduleResolution": "Node",
     "types": [
       "jquery",
       "tampermonkey",
