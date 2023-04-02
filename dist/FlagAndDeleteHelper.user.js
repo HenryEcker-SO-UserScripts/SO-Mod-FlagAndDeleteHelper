@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.10
+// @version      0.0.11
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -157,6 +157,13 @@
             }
         );
     }
+
+    function configureCharCounter(jTextarea, populateText, charCounterOptions) {
+        if (charCounterOptions.target === void 0) {
+            charCounterOptions.target = jTextarea.parent().find("span.text-counter");
+        }
+        jTextarea.val(populateText).charCounter(charCounterOptions).trigger("charCounterUpdate");
+    }
     const gmConfigKey = "fadh-config";
     const defaultFlagTemplateConfig = JSON.stringify({
         flagType: "mod-flag",
@@ -238,22 +245,15 @@
                 this._hideTargetDiv("comment-info-areaTarget");
             }
         },
-        _setupCharCounter(taTarget, bounds) {
-            const jTextarea = $(this[taTarget]);
-            jTextarea.charCounter({
-                ...bounds,
-                target: jTextarea.parent().find("span.text-counter")
-            }).trigger("charCounterUpdate");
-        },
         connect() {
             const loadedConfig = JSON.parse(
                 GM_getValue(gmConfigKey, defaultFlagTemplateConfig)
             );
             this._setupFlagUI(loadedConfig.flagType, loadedConfig.flagDetailTemplate);
             this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
-            this._setupCharCounter("plagiarism-detail-areaTarget", plagiarismFlagLengthBounds.explanation);
-            this._setupCharCounter("mod-flag-areaTarget", modFlagTextLengthBounds);
-            this._setupCharCounter("comment-areaTarget", commentTextLengthBounds);
+            configureCharCounter($(this["plagiarism-detail-areaTarget"]), "", plagiarismFlagLengthBounds.explanation);
+            configureCharCounter($(this["mod-flag-areaTarget"]), "", modFlagTextLengthBounds);
+            configureCharCounter($(this["comment-areaTarget"]), "", commentTextLengthBounds);
         },
         _assertValidCharacterLengths(flagType) {
             if (flagType === "mod-flag") {
