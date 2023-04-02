@@ -16,6 +16,7 @@ import {removeModalFromDOM} from 'se-ts-userscript-utilities/StacksHelpers/Stack
 import {getModalId, type ModFlagRadioType} from '../Globals';
 import {type ActionEvent} from '@hotwired/stimulus';
 import {addComment} from 'se-ts-userscript-utilities/Comments/Comments';
+import {configureCharCounter} from 'se-ts-userscript-utilities/StacksHelpers/StacksCharCounter';
 
 
 interface FlagTemplateConfig {
@@ -111,15 +112,6 @@ export const fadhController = {
             this._hideTargetDiv(COMMENT_CONTROL_FIELDS_TARGET);
         }
     },
-    _setupCharCounter(taTarget: string, bounds: { min: number; max: number; }) {
-        const jTextarea = $(this[taTarget]);
-        jTextarea
-            .charCounter({
-                ...bounds,
-                target: jTextarea.parent().find('span.text-counter')
-            })
-            .trigger('charCounterUpdate');
-    },
     connect() {
         const loadedConfig: FlagTemplateConfig = JSON.parse(
             GM_getValue(gmConfigKey, defaultFlagTemplateConfig)
@@ -128,9 +120,9 @@ export const fadhController = {
         this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
 
         // Set up char counters
-        this._setupCharCounter(PLAGIARISM_FLAG_DETAIL_TEXT_TARGET, plagiarismFlagLengthBounds.explanation);
-        this._setupCharCounter(MOD_FLAG_DETAIL_TEXT_TARGET, modFlagTextLengthBounds);
-        this._setupCharCounter(COMMENT_TEXT_TARGET, commentTextLengthBounds);
+        configureCharCounter($(this[PLAGIARISM_FLAG_DETAIL_TEXT_TARGET]), '', plagiarismFlagLengthBounds.explanation);
+        configureCharCounter($(this[MOD_FLAG_DETAIL_TEXT_TARGET]), '', modFlagTextLengthBounds);
+        configureCharCounter($(this[COMMENT_TEXT_TARGET]), '', commentTextLengthBounds);
     },
     _assertValidCharacterLengths(flagType: ModFlagRadioType) {
         if (flagType === 'mod-flag') {
