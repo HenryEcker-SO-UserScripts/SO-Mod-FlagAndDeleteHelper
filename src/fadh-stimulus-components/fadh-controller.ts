@@ -113,10 +113,12 @@ export const fadhController = {
     },
     _setupCharCounter(taTarget: string, bounds: { min: number; max: number; }) {
         const jTextarea = $(this[taTarget]);
-        jTextarea.charCounter({
-            ...bounds,
-            target: jTextarea.parent().find('span.text-counter')
-        });
+        jTextarea
+            .charCounter({
+                ...bounds,
+                target: jTextarea.parent().find('span.text-counter')
+            })
+            .trigger('charCounterUpdate');
     },
     connect() {
         const loadedConfig: FlagTemplateConfig = JSON.parse(
