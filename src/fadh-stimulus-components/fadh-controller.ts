@@ -12,7 +12,10 @@ import {
     modFlagTextLengthBounds,
     plagiarismFlagLengthBounds
 } from 'se-ts-userscript-utilities/Validators/TextLengthValidators';
-import {removeModalFromDOM} from 'se-ts-userscript-utilities/StacksHelpers/StacksModal';
+import {
+    disableSubmitButtonAndToastErrors,
+    removeModalFromDOM
+} from 'se-ts-userscript-utilities/StacksHelpers/StacksModal';
 import {getModalId, type ModFlagRadioType} from '../Globals';
 import {type ActionEvent} from '@hotwired/stimulus';
 import {addComment} from 'se-ts-userscript-utilities/Comments/Comments';
@@ -147,26 +150,20 @@ export const fadhController = {
         }
     },
     async HANDLE_NUKE_SUBMIT_ACTIONS(ev: ActionEvent) {
-        ev.preventDefault();
-        const jSubmitButton = $(this[FORM_SUBMIT_BUTTON_TARGET]);
-        jSubmitButton
-            .prop('disabled', true)
-            .addClass('is-loading');
-        const {postId} = ev.params;
-        const flagType = this.getFlagType(postId);
-        try {
-            this._assertValidCharacterLengths(flagType);
-            await this._handleFlag(flagType, postId);
-            if (this.shouldComment) {
-                await addComment(postId, this.commentText);
+        await disableSubmitButtonAndToastErrors(
+            $(this[FORM_SUBMIT_BUTTON_TARGET]),
+            async () => {
+                ev.preventDefault();
+                const {postId} = ev.params;
+                const flagType = this.getFlagType(postId);
+                this._assertValidCharacterLengths(flagType);
+                await this._handleFlag(flagType, postId);
+                if (this.shouldComment) {
+                    await addComment(postId, this.commentText);
+                }
+                window.location.reload();
             }
-            window.location.reload();
-        } catch (e) {
-            StackExchange.helpers.showToast(e.message, {type: 'danger'});
-            jSubmitButton
-                .prop('disabled', false)
-                .removeClass('is-loading');
-        }
+        );
     },
     HANDLE_CANCEL_ACTION(ev: ActionEvent) {
         ev.preventDefault();

@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.11
+// @version      0.0.12
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -133,6 +133,17 @@
         return true;
     }
 
+    function getMessageFromCaughtElement(e) {
+        if (e instanceof Error) {
+            return e.message;
+        } else if (typeof e === "string") {
+            return e;
+        } else {
+            console.error(e);
+            return e.toString();
+        }
+    }
+
     function removeModalFromDOM(modalId) {
         const existingModal = document.getElementById(modalId);
         if (existingModal !== null) {
@@ -140,6 +151,16 @@
             setTimeout(() => {
                 existingModal.remove();
             }, 125);
+        }
+    }
+    async function disableSubmitButtonAndToastErrors(jSubmitButton, handleActions) {
+        jSubmitButton.prop("disabled", true).addClass("is-loading");
+        try {
+            await handleActions();
+        } catch (error) {
+            StackExchange.helpers.showToast(getMessageFromCaughtElement(error), { type: "danger" });
+        } finally {
+            jSubmitButton.prop("disabled", false).removeClass("is-loading");
         }
     }
 
@@ -278,22 +299,20 @@
             }
         },
         async handleNukeSubmitActions(ev) {
-            ev.preventDefault();
-            const jSubmitButton = $(this["submit-buttonTarget"]);
-            jSubmitButton.prop("disabled", true).addClass("is-loading");
-            const { postId } = ev.params;
-            const flagType = this.getFlagType(postId);
-            try {
-                this._assertValidCharacterLengths(flagType);
-                await this._handleFlag(flagType, postId);
-                if (this.shouldComment) {
-                    await addComment(postId, this.commentText);
+            await disableSubmitButtonAndToastErrors(
+                $(this["submit-buttonTarget"]),
+                async () => {
+                    ev.preventDefault();
+                    const { postId } = ev.params;
+                    const flagType = this.getFlagType(postId);
+                    this._assertValidCharacterLengths(flagType);
+                    await this._handleFlag(flagType, postId);
+                    if (this.shouldComment) {
+                        await addComment(postId, this.commentText);
+                    }
+                    window.location.reload();
                 }
-                window.location.reload();
-            } catch (e) {
-                StackExchange.helpers.showToast(e.message, { type: "danger" });
-                jSubmitButton.prop("disabled", false).removeClass("is-loading");
-            }
+            );
         },
         cancelHandleForm(ev) {
             ev.preventDefault();
