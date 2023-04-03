@@ -102,8 +102,8 @@ export const fadhController = {
             fadhNukePostFormShowsParam,
             fadhNukePostFormTextareaParam,
         } = $(this[radioTarget]).data();
-        this._hideTargetDiv(fadhNukePostFormHidesParam + 'Target');
-        this._showTargetDiv(fadhNukePostFormShowsParam + 'Target');
+        this._hideTargetDiv(`${fadhNukePostFormHidesParam}Target`);
+        this._showTargetDiv(`${fadhNukePostFormShowsParam}Target`);
         this[`${fadhNukePostFormTextareaParam}Target`].value = baseDetailText ?? '';
     },
     _setupCommentUI(shouldComment: boolean, baseCommentText?: string) {
