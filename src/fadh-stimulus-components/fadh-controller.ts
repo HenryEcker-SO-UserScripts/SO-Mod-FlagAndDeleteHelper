@@ -104,13 +104,17 @@ export const fadhController = {
         } = $(this[radioTarget]).data();
         this._hideTargetDiv(`${fadhNukePostFormHidesParam}Target`);
         this._showTargetDiv(`${fadhNukePostFormShowsParam}Target`);
-        this[`${fadhNukePostFormTextareaParam}Target`].value = baseDetailText ?? '';
+        $(this[`${fadhNukePostFormTextareaParam}Target`])
+            .val(baseDetailText ?? '')
+            .trigger('charCounterUpdate');
     },
     _setupCommentUI(shouldComment: boolean, baseCommentText?: string) {
         this[ENABLE_COMMENT_TOGGLE_TARGET].checked = shouldComment;
         if (shouldComment) {
             this._showTargetDiv(COMMENT_CONTROL_FIELDS_TARGET);
-            this[COMMENT_TEXT_TARGET].value = baseCommentText ?? '';
+            $(this[COMMENT_TEXT_TARGET])
+                .val(baseCommentText ?? '')
+                .trigger('charCounterUpdate');
         } else {
             this._hideTargetDiv(COMMENT_CONTROL_FIELDS_TARGET);
         }
@@ -119,13 +123,14 @@ export const fadhController = {
         const loadedConfig: FlagTemplateConfig = JSON.parse(
             GM_getValue(gmConfigKey, defaultFlagTemplateConfig)
         );
-        this._setupFlagUI(loadedConfig.flagType, loadedConfig.flagDetailTemplate);
-        this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
-
-        // Set up char counters
+        // Set up char counters (only do this once!!)
         configureCharCounter($(this[PLAGIARISM_FLAG_DETAIL_TEXT_TARGET]), '', plagiarismFlagLengthBounds.explanation);
         configureCharCounter($(this[MOD_FLAG_DETAIL_TEXT_TARGET]), '', modFlagTextLengthBounds);
         configureCharCounter($(this[COMMENT_TEXT_TARGET]), '', commentTextLengthBounds);
+
+        // Do Setups after char counter so the values can be written in after the counters are attached
+        this._setupFlagUI(loadedConfig.flagType, loadedConfig.flagDetailTemplate);
+        this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
     },
     _assertValidCharacterLengths(flagType: ModFlagRadioType) {
         if (flagType === 'mod-flag') {
