@@ -229,7 +229,7 @@ async function handleNukeAsPlagiarism(postId: number, originalSource: string, de
         throw new Error(flagFetch.Message);
     }
     const deleteFetch = await deleteAsPlagiarism(postId);
-    if (deleteFetch.status !== 200) {
-        throw new Error('Something went wrong when deleting the post "as plagiarism"!');
+    if (!deleteFetch.success) {
+        throw new Error(deleteFetch.message);
     }
 }

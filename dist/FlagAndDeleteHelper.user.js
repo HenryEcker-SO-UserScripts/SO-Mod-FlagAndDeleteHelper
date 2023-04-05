@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.13
+// @version      0.0.14
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -88,11 +88,21 @@
     }
 
     function deleteAsPlagiarism(postId) {
-        return fetchPostFormData(
-            `/admin/posts/${postId}/delete-as-plagiarism`, {
-                fkey: StackExchange.options.user.fkey
-            }
-        );
+        return new Promise((resolve, reject) => {
+            void $.ajax({
+                type: "POST",
+                url: `/admin/posts/${postId}/delete-as-plagiarism`,
+                data: {
+                    fkey: StackExchange.options.user.fkey
+                },
+                success: (json) => {
+                    resolve(json);
+                },
+                error: (res) => {
+                    reject(res);
+                }
+            });
+        });
     }
 
     function isInValidationBounds(textLength, bounds) {
@@ -366,8 +376,8 @@
             throw new Error(flagFetch.Message);
         }
         const deleteFetch = await deleteAsPlagiarism(postId);
-        if (deleteFetch.status !== 200) {
-            throw new Error('Something went wrong when deleting the post "as plagiarism"!');
+        if (!deleteFetch.success) {
+            throw new Error(deleteFetch.message);
         }
     }
 
