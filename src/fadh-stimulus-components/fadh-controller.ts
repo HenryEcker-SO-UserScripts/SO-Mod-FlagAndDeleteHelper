@@ -218,8 +218,8 @@ async function handleNukeAsModFlag(postId: number, otherText: string) {
         throw new Error(flagFetch.Message);
     }
     const deleteFetch = await deletePost(postId);
-    if (deleteFetch.status !== 200) {
-        throw new Error('Something went wrong when deleting the post!');
+    if (!deleteFetch.Success) {
+        throw new Error(deleteFetch.Message);
     }
 }
 
