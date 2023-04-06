@@ -7,10 +7,10 @@ function* cartesianProductOf(array1, array2) {
 }
 
 const siteBases = [
-    '*://*.askubuntu.com', '*://*.serverfault.com',
-    '*://*.stackapps.com', '*://*.stackexchange.com',
-    '*://*.stackoverflow.com', '*://*.superuser.com',
-    '*://*.mathoverflow.net'
+    '*://*askubuntu.com', '*://*serverfault.com',
+    '*://*stackapps.com', '*://*stackexchange.com',
+    '*://*stackoverflow.com', '*://*superuser.com',
+    '*://*mathoverflow.net'
 ].sort((a, b) => a.localeCompare(b));
 
 
