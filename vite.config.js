@@ -3,6 +3,8 @@ import {buildMatchPatterns} from './banner-build-util';
 import banner from 'vite-plugin-banner';
 import packageConfig from './package.json';
 import beautifyPlugin from './vite-plugin-beautify-output';
+import fs from 'fs';
+import path from 'path';
 
 
 const postButtonLabel = 'Flag and remove';
@@ -15,11 +17,14 @@ const bannerText = `// ==UserScript==
 // @author       Henry Ecker (https://github.com/HenryEcker)
 // @version      ${packageConfig.version}
 // @downloadURL  ${packageConfig.repository.dist_url}${fileNameBase}.user.js
-// @updateURL    ${packageConfig.repository.dist_url}${fileNameBase}.user.js
+// @updateURL    ${packageConfig.repository.dist_meta_url}${fileNameBase}.meta.js
 //
 ${buildMatchPatterns('// @match        ', '/questions/*')}
 //
-${buildMatchPatterns('// @exclude        ', '/questions/ask*')}
+${buildMatchPatterns('// @exclude      ', '/questions/ask*')}
+// @exclude      *//chat.stackoverflow.com/*  
+// @exclude      *//chat.meta.stackexchange.com/*  
+// @exclude      *//chat.stackexchange.com/*  
 //
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -34,7 +39,19 @@ export default () => {
             beautifyPlugin({
                 brace_style: 'collapse,preserve-inline'
             }),
-            banner(bannerText)
+            banner(bannerText),
+            {
+                closeBundle() {
+                    const metaDir = path.resolve(__dirname, 'dist', 'meta');
+                    if (!fs.existsSync(metaDir)) {
+                        fs.mkdirSync(metaDir);
+                    }
+                    fs.writeFileSync(
+                        path.resolve(metaDir, `${fileNameBase}.meta.js`),
+                        bannerText
+                    );
+                }
+            }
         ],
         define:{
             ...stimulusNWFHtmlDefineObj,

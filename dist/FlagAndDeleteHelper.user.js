@@ -5,23 +5,26 @@
 // @author       Henry Ecker (https://github.com/HenryEcker)
 // @version      0.0.15
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
-// @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
+// @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/meta/FlagAndDeleteHelper.meta.js
 //
-// @match        *://*.askubuntu.com/questions/*
-// @match        *://*.mathoverflow.net/questions/*
-// @match        *://*.serverfault.com/questions/*
-// @match        *://*.stackapps.com/questions/*
-// @match        *://*.stackexchange.com/questions/*
-// @match        *://*.stackoverflow.com/questions/*
-// @match        *://*.superuser.com/questions/*
+// @match        *://*askubuntu.com/questions/*
+// @match        *://*mathoverflow.net/questions/*
+// @match        *://*serverfault.com/questions/*
+// @match        *://*stackapps.com/questions/*
+// @match        *://*stackexchange.com/questions/*
+// @match        *://*stackoverflow.com/questions/*
+// @match        *://*superuser.com/questions/*
 //
-// @exclude        *://*.askubuntu.com/questions/ask*
-// @exclude        *://*.mathoverflow.net/questions/ask*
-// @exclude        *://*.serverfault.com/questions/ask*
-// @exclude        *://*.stackapps.com/questions/ask*
-// @exclude        *://*.stackexchange.com/questions/ask*
-// @exclude        *://*.stackoverflow.com/questions/ask*
-// @exclude        *://*.superuser.com/questions/ask*
+// @exclude      *://*askubuntu.com/questions/ask*
+// @exclude      *://*mathoverflow.net/questions/ask*
+// @exclude      *://*serverfault.com/questions/ask*
+// @exclude      *://*stackapps.com/questions/ask*
+// @exclude      *://*stackexchange.com/questions/ask*
+// @exclude      *://*stackoverflow.com/questions/ask*
+// @exclude      *://*superuser.com/questions/ask*
+// @exclude      *//chat.stackoverflow.com/*  
+// @exclude      *//chat.meta.stackexchange.com/*  
+// @exclude      *//chat.stackexchange.com/*  
 //
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -32,23 +35,22 @@
 (function() {
     "use strict";
 
-    function ajaxPostWithData(endPoint, data, shouldReturnData = true) {
-        return new Promise((resolve, reject) => {
-            void $.ajax({
-                type: "POST",
-                url: endPoint,
-                data
-            }).done((resData, textStatus, xhr) => {
-                resolve(
-                    shouldReturnData ? resData : {
-                        status: xhr.status,
-                        statusText: textStatus
-                    }
-                );
-            }).fail((res) => {
-                reject(res.responseText ?? "An unknown error occurred");
-            });
+    function getFormDataFromObject(obj) {
+        return Object.entries(obj).reduce((acc, [key, value]) => {
+            acc.set(key, value);
+            return acc;
+        }, new FormData());
+    }
+
+    function fetchPostFormData(endPoint, data) {
+        return fetch(endPoint, {
+            method: "POST",
+            body: getFormDataFromObject(data)
         });
+    }
+
+    function fetchPostFormDataBodyJsonResponse(endPoint, data) {
+        return fetchPostFormData(endPoint, data).then((res) => res.json());
     }
 
     function flagPost(flagType, postId, otherText, overrideWarning, customData) {
@@ -62,14 +64,14 @@
         if (customData !== void 0) {
             data["customData"] = JSON.stringify(customData);
         }
-        return ajaxPostWithData(
+        return fetchPostFormDataBodyJsonResponse(
             `/flags/posts/${postId}/add/${flagType}`,
             data
         );
     }
 
     function castPostsVote(postId, voteType) {
-        return ajaxPostWithData(
+        return fetchPostFormData(
             `/posts/${postId}/vote/${voteType}`, {
                 fkey: StackExchange.options.user.fkey
             }
@@ -89,8 +91,20 @@
     }
 
     function deleteAsPlagiarism(postId) {
-        return ajaxPostWithData(`/admin/posts/${postId}/delete-as-plagiarism`, {
-            fkey: StackExchange.options.user.fkey
+        return new Promise((resolve, reject) => {
+            void $.ajax({
+                type: "POST",
+                url: `/admin/posts/${postId}/delete-as-plagiarism`,
+                data: {
+                    fkey: StackExchange.options.user.fkey
+                },
+                success: (json) => {
+                    resolve(json);
+                },
+                error: (res) => {
+                    reject(res);
+                }
+            });
         });
     }
 
@@ -170,7 +184,7 @@
     }
 
     function addComment(postId, commentText) {
-        return ajaxPostWithData(
+        return fetchPostFormData(
             `/posts/${postId}/comments`, {
                 fkey: StackExchange.options.user.fkey,
                 comment: commentText
