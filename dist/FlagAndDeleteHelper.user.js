@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.14
+// @version      0.0.15
 // @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 //
@@ -32,22 +32,23 @@
 (function() {
     "use strict";
 
-    function getFormDataFromObject(obj) {
-        return Object.entries(obj).reduce((acc, [key, value]) => {
-            acc.set(key, value);
-            return acc;
-        }, new FormData());
-    }
-
-    function fetchPostFormData(endPoint, data) {
-        return fetch(endPoint, {
-            method: "POST",
-            body: getFormDataFromObject(data)
+    function ajaxPostWithData(endPoint, data, shouldReturnData = true) {
+        return new Promise((resolve, reject) => {
+            void $.ajax({
+                type: "POST",
+                url: endPoint,
+                data
+            }).done((resData, textStatus, xhr) => {
+                resolve(
+                    shouldReturnData ? resData : {
+                        status: xhr.status,
+                        statusText: textStatus
+                    }
+                );
+            }).fail((res) => {
+                reject(res.responseText ?? "An unknown error occurred");
+            });
         });
-    }
-
-    function fetchPostFormDataBodyJsonResponse(endPoint, data) {
-        return fetchPostFormData(endPoint, data).then((res) => res.json());
     }
 
     function flagPost(flagType, postId, otherText, overrideWarning, customData) {
@@ -61,14 +62,14 @@
         if (customData !== void 0) {
             data["customData"] = JSON.stringify(customData);
         }
-        return fetchPostFormDataBodyJsonResponse(
+        return ajaxPostWithData(
             `/flags/posts/${postId}/add/${flagType}`,
             data
         );
     }
 
     function castPostsVote(postId, voteType) {
-        return fetchPostFormData(
+        return ajaxPostWithData(
             `/posts/${postId}/vote/${voteType}`, {
                 fkey: StackExchange.options.user.fkey
             }
@@ -88,20 +89,8 @@
     }
 
     function deleteAsPlagiarism(postId) {
-        return new Promise((resolve, reject) => {
-            void $.ajax({
-                type: "POST",
-                url: `/admin/posts/${postId}/delete-as-plagiarism`,
-                data: {
-                    fkey: StackExchange.options.user.fkey
-                },
-                success: (json) => {
-                    resolve(json);
-                },
-                error: (res) => {
-                    reject(res);
-                }
-            });
+        return ajaxPostWithData(`/admin/posts/${postId}/delete-as-plagiarism`, {
+            fkey: StackExchange.options.user.fkey
         });
     }
 
@@ -181,7 +170,7 @@
     }
 
     function addComment(postId, commentText) {
-        return fetchPostFormData(
+        return ajaxPostWithData(
             `/posts/${postId}/comments`, {
                 fkey: StackExchange.options.user.fkey,
                 comment: commentText
@@ -366,8 +355,8 @@
             throw new Error(flagFetch.Message);
         }
         const deleteFetch = await deletePost(postId);
-        if (deleteFetch.status !== 200) {
-            throw new Error("Something went wrong when deleting the post!");
+        if (!deleteFetch.Success) {
+            throw new Error(deleteFetch.Message);
         }
     }
     async function handleNukeAsPlagiarism(postId, originalSource, detailText) {
