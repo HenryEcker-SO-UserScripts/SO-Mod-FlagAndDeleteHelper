@@ -2,7 +2,7 @@ import {type ModFlagRadioType} from '../Globals';
 import {html_beautify} from 'js-beautify';
 
 const ids = {
-    modal: 'fadh-nuke-post-form-{postId}',
+    modal: 'fadh-handle-post-form-{postId}',
     enableCommentToggle: 'fadh-comment-enable-toggle-{postId}',
     plagiarismFlagOriginalSourceTextarea: 'fadh-plagiarism-original-source-area-{postId}',
     plagiarismFlagDetailTextarea: 'fadh-plagiarism-detail-area-{postId}',
@@ -18,7 +18,7 @@ const radio = {
 };
 
 const data = {
-    controller: 'fadh-nuke-post-form',
+    controller: 'fadh-handle-post-form',
     params: {
         postId: 'post-id',
         controls: 'controls',
@@ -40,7 +40,7 @@ const data = {
         commentTextarea: 'comment-area'
     },
     action: {
-        handleNukeSubmitActions: 'handleNukeSubmitActions',
+        handleSubmitActions: 'handleSubmitActions',
         handleCancelActions: 'cancelHandleForm',
         handleUpdateFlagTypeSelection: 'handleUpdateFlagSelection',
         handleUpdateCommentControlledField: 'handleUpdateCommentControlledField',
@@ -119,7 +119,7 @@ function buildFlagTypeCheckbox(labelText: string, isChecked: boolean, inputValue
 }
 
 
-const nukeWithFlagForm = `
+const handleWithFlagForm = `
 <aside class="s-modal s-modal__danger" id="{modalId}" tabindex="-1" role="dialog" aria-hidden="true" 
        data-controller="s-modal" 
        data-s-modal-target="modal">
@@ -207,8 +207,8 @@ ${buildToggle(
         <button class="s-btn flex--item s-btn__filled s-btn__danger" 
                 type="button"
                 data-${data.controller}-target="${data.target.submitButton}"
-                data-action="click->${data.controller}#${data.action.handleNukeSubmitActions}" 
-                data-${data.controller}-${data.params.postId}-param="{postId}">Nuke Post</button>
+                data-action="click->${data.controller}#${data.action.handleSubmitActions}" 
+                data-${data.controller}-${data.params.postId}-param="{postId}">Delete Post</button>
         <button class="s-btn flex--item s-btn__muted" 
                 type="button" 
                 data-action="click->${data.controller}#${data.action.handleCancelActions}"
@@ -230,7 +230,7 @@ ${buildToggle(
 
 export default {
     JS_MODAL_ID: JSON.stringify(ids.modal),
-    NUKE_FORM: `\`\n${html_beautify(nukeWithFlagForm, {preserve_newlines: false})}\``,
+    HANDLE_WITH_FLAG_FORM: `\`\n${html_beautify(handleWithFlagForm, {preserve_newlines: false})}\``,
     FORM_SUBMIT_BUTTON_TARGET: JSON.stringify(`${data.target.submitButton}Target`),
     CONTROLLER_NAME: JSON.stringify(data.controller),
     DATA_TARGETS: [...Object.values(data.target)],
@@ -243,7 +243,7 @@ export default {
     ENABLE_PLAGIARISM_FLAG_RADIO: JSON.stringify(`${data.target.enablePlagiarismFlagRadio}Target`),
     COMMENT_TEXT_TARGET: JSON.stringify(`${data.target.commentTextarea}Target`),
     COMMENT_CONTROL_FIELDS_TARGET: JSON.stringify(`${data.target.commentControlFields}Target`),
-    HANDLE_NUKE_SUBMIT_ACTIONS: data.action.handleNukeSubmitActions,
+    HANDLE_SUBMIT_ACTIONS: data.action.handleSubmitActions,
     HANDLE_CANCEL_ACTION: data.action.handleCancelActions,
     HANDLE_UPDATE_FLAG_TYPE_SELECTION: data.action.handleUpdateFlagTypeSelection,
     HANDLE_UPDATE_COMMENT_CONTROL_FIELD: data.action.handleUpdateCommentControlledField,

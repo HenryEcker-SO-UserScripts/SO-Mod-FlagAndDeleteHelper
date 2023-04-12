@@ -13,7 +13,7 @@ function clickHandler(ev: Event) {
     if (existingModal !== null) {
         Stacks.showModal(existingModal);
     } else {
-        $('body').append(NUKE_FORM.formatUnicorn({modalId: modalId, postId: postId}));
+        $('body').append(HANDLE_WITH_FLAG_FORM.formatUnicorn({modalId: modalId, postId: postId}));
         window.setTimeout(() => {
             const modal = document.getElementById(modalId);
             Stacks.showModal(modal);

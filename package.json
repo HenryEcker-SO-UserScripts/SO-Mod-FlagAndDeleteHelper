@@ -1,6 +1,6 @@
 {
   "name": "flag-and-delete-helper",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "author": "Henry Ecker (https://github.com/HenryEcker)",
   "description": "Help document mod deletions via flags and comments",
   "repository": {
