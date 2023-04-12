@@ -98,13 +98,13 @@ export const fadhController = {
         const radioTarget = this._getRelevantEnableToggleTarget(flagType);
         this[radioTarget].checked = true;
         const {
-            fadhNukePostFormHidesParam,
-            fadhNukePostFormShowsParam,
-            fadhNukePostFormTextareaParam,
+            fadhHandlePostFormHidesParam,
+            fadhHandlePostFormShowsParam,
+            fadhHandlePostFormTextareaParam,
         } = $(this[radioTarget]).data();
-        this._hideTargetDiv(`${fadhNukePostFormHidesParam}Target`);
-        this._showTargetDiv(`${fadhNukePostFormShowsParam}Target`);
-        $(this[`${fadhNukePostFormTextareaParam}Target`])
+        this._hideTargetDiv(`${fadhHandlePostFormHidesParam}Target`);
+        this._showTargetDiv(`${fadhHandlePostFormShowsParam}Target`);
+        $(this[`${fadhHandlePostFormTextareaParam}Target`])
             .val(baseDetailText ?? '')
             .trigger('charCounterUpdate');
     },
@@ -147,14 +147,14 @@ export const fadhController = {
     _handleFlag(flagType: ModFlagRadioType, postId: number) {
         switch (flagType) {
             case 'mod-flag':
-                return handleNukeAsModFlag(postId, this.modFlagDetailText);
+                return handleDeleteWithModFlag(postId, this.modFlagDetailText);
             case 'plagiarism':
-                return handleNukeAsPlagiarism(postId, this.plagiarismFlagOriginalSourceText, this.plagiarismFlagDetailText);
+                return handleDeleteAsPlagiarism(postId, this.plagiarismFlagOriginalSourceText, this.plagiarismFlagDetailText);
             default:
                 throw new Error('Cannot run flag operation for invalid flag type');
         }
     },
-    async HANDLE_NUKE_SUBMIT_ACTIONS(ev: ActionEvent) {
+    async HANDLE_SUBMIT_ACTIONS(ev: ActionEvent) {
         await disableSubmitButtonAndToastErrors(
             $(this[FORM_SUBMIT_BUTTON_TARGET]),
             async () => {
@@ -212,7 +212,7 @@ export const fadhController = {
 };
 
 
-async function handleNukeAsModFlag(postId: number, otherText: string) {
+async function handleDeleteWithModFlag(postId: number, otherText: string) {
     const flagFetch = await flagInNeedOfModeratorIntervention(postId, otherText);
     if (!flagFetch.Success) {
         throw new Error(flagFetch.Message);
@@ -223,7 +223,7 @@ async function handleNukeAsModFlag(postId: number, otherText: string) {
     }
 }
 
-async function handleNukeAsPlagiarism(postId: number, originalSource: string, detailText: string) {
+async function handleDeleteAsPlagiarism(postId: number, originalSource: string, detailText: string) {
     const flagFetch = await flagPlagiarizedContent(postId, originalSource, detailText);
     if (!flagFetch.Success) {
         throw new Error(flagFetch.Message);

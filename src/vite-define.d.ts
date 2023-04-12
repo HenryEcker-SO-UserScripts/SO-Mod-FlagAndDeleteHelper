@@ -13,7 +13,7 @@ interface JQuery {
 // Vite define
 declare const SUPPORTS_PLAGIARISM_FLAG_TYPE: number[];
 declare const JS_MODAL_ID: string;
-declare const NUKE_FORM: string;
+declare const HANDLE_WITH_FLAG_FORM: string;
 declare const FORM_SUBMIT_BUTTON_TARGET: string;
 declare const CONTROLLER_NAME: string;
 declare const DATA_TARGETS: string[];
