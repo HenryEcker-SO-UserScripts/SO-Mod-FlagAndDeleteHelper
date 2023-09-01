@@ -18,7 +18,7 @@
     "bump-major": "npm --no-git-tag-version version major && npm run build"
   },
   "dependencies": {
-    "@hotwired/stimulus": "^3.2.1",
+    "@hotwired/stimulus": "^3.2.2",
     "@types/format-unicorn": "^1.1.2",
     "@types/jquery": "^3.5.16",
     "@types/js-beautify": "^1.14.0",
