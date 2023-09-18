@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         SE post flag and delete helper 
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
-// @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
+// @homepage     https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.17
-// @downloadURL  https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
-// @updateURL    https://github.com/HenryEcker/SO-Mod-FlagAndDeleteHelper/raw/master/dist/meta/FlagAndDeleteHelper.meta.js
+// @version      0.0.18
+// @downloadURL  https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
+// @updateURL    https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper/raw/master/dist/meta/FlagAndDeleteHelper.meta.js
 //
 // @match        *://*askubuntu.com/questions/*
 // @match        *://*mathoverflow.net/questions/*

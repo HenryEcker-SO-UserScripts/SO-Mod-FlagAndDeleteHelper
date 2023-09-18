@@ -13,7 +13,7 @@ const fileNameBase = 'FlagAndDeleteHelper';
 const bannerText = `// ==UserScript==
 // @name         SE post flag and delete helper 
 // @description  Adds a "${postButtonLabel}" button to all posts that assists in raising text flags and immediately handling them
-// @homepage     https://github.com/HenryEcker/SO-Mod-UserScripts
+// @homepage     ${packageConfig.repository.homepage}
 // @author       Henry Ecker (https://github.com/HenryEcker)
 // @version      ${packageConfig.version}
 // @downloadURL  ${packageConfig.repository.dist_url}${fileNameBase}.user.js
