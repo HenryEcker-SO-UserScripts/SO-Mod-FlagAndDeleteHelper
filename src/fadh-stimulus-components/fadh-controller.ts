@@ -133,12 +133,15 @@ export const fadhController = {
         this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
     },
     _assertValidCharacterLengths(flagType: ModFlagRadioType) {
-        if (flagType === 'mod-flag') {
-            assertValidModFlagTextLength(this.modFlagDetailText.length);
-        } else if (flagType === 'plagiarism') {
-            assertValidPlagiarismFlagTextLengths(this.plagiarismFlagOriginalSourceText.length, this.plagiarismFlagDetailText.length);
-        } else {
-            throw new Error('Cannot validate bounds for invalid flag type.');
+        switch (flagType) {
+            case 'mod-flag':
+                assertValidModFlagTextLength(this.modFlagDetailText.length);
+                break;
+            case 'plagiarism':
+                assertValidPlagiarismFlagTextLengths(this.plagiarismFlagOriginalSourceText.length, this.plagiarismFlagDetailText.length);
+                break;
+            default:
+                throw new Error('Cannot validate bounds for invalid flag type.');
         }
         if (this.shouldComment === true) {
             assertValidCommentTextLength(this.commentText.length);
