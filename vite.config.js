@@ -1,6 +1,7 @@
 import stimulusNWFHtmlDefineObj from './src/fadh-stimulus-components/prebuildable-stimulus-components';
 import {buildMatchPatterns} from './banner-build-util';
 import banner from 'vite-plugin-banner';
+import replace from '@rollup/plugin-replace';
 import packageConfig from './package.json';
 import beautifyPlugin from './vite-plugin-beautify-output';
 import fs from 'fs';
@@ -36,6 +37,15 @@ ${buildMatchPatterns('// @exclude      ', '/questions/ask*')}
 export default () => {
     return {
         plugins: [
+            replace({
+                preventAssignment: false,
+                delimiters: ['\\b', '\\b'],
+                values: {
+                    ...stimulusNWFHtmlDefineObj,
+                    SUPPORTS_PLAGIARISM_FLAG_TYPE: JSON.stringify([1]),
+                    POST_BUTTON_LABEL: postButtonLabel
+                }
+            }),
             beautifyPlugin({
                 brace_style: 'collapse,preserve-inline'
             }),
@@ -53,11 +63,6 @@ export default () => {
                 }
             }
         ],
-        define:{
-            ...stimulusNWFHtmlDefineObj,
-            SUPPORTS_PLAGIARISM_FLAG_TYPE: [1],
-            POST_BUTTON_LABEL: postButtonLabel
-        },
         build: {
             rollupOptions: {
                 input: {

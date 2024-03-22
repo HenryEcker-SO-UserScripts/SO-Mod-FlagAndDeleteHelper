@@ -233,7 +233,7 @@ export default {
     HANDLE_WITH_FLAG_FORM: `\`\n${html_beautify(handleWithFlagForm, {preserve_newlines: false})}\``,
     FORM_SUBMIT_BUTTON_TARGET: JSON.stringify(`${data.target.submitButton}Target`),
     CONTROLLER_NAME: JSON.stringify(data.controller),
-    DATA_TARGETS: [...Object.values(data.target)],
+    DATA_TARGETS: JSON.stringify([...Object.values(data.target)]),
     FLAG_RADIO_NAME: JSON.stringify(radio.flagType.name),
     PLAGIARISM_FLAG_ORIGINAL_SOURCE_TEXT_TARGET: JSON.stringify(`${data.target.plagiarismFlagOriginalSourceTextarea}Target`),
     PLAGIARISM_FLAG_DETAIL_TEXT_TARGET: JSON.stringify(`${data.target.plagiarismFlagDetailTextarea}Target`),
