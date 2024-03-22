@@ -25,11 +25,11 @@ function clickHandler(ev: Event) {
 function addButtonToPosts() {
     $('.js-post-menu')
         .each((i, n) => {
-            const jsPostMenu = $(n);
-            const parentElement = jsPostMenu.closest('div.question,div.answer');
+            const $jsPostMenu = $(n);
+            const $parentElement = $jsPostMenu.closest('div.question,div.answer');
 
             // For some reason deleted questions also use the semantic CSS class deleted-answer
-            const isDeleted = parentElement.hasClass('deleted-answer');
+            const isDeleted = $parentElement.hasClass('deleted-answer');
             if (isDeleted) {
                 // Don't render on deleted posts
                 // It'd be great to make these a disabled button, but SE uses links in the mod menu and does
@@ -37,14 +37,14 @@ function addButtonToPosts() {
                 return;
             }
 
-            const postId = Number(parentElement.attr('data-questionid') ?? parentElement.attr('data-answerid'));
+            const postId = Number($parentElement.attr('data-questionid') ?? $parentElement.attr('data-answerid'));
 
-            const btn = $(`<a href="#" data-postid="${postId}">POST_BUTTON_LABEL</a>`);
+            const $btn = $(`<a href="#" data-postid="${postId}">POST_BUTTON_LABEL</a>`);
 
-            btn.on('click', clickHandler);
+            $btn.on('click', clickHandler);
 
-            jsPostMenu.find('>div.s-anchors').append(
-                $('<div class="flex--item"></div>').append(btn)
+            $jsPostMenu.find('>div.s-anchors').append(
+                $('<div class="flex--item"></div>').append($btn)
             );
         });
 }
