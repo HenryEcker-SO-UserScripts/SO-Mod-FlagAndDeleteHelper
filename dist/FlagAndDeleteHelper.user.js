@@ -3,7 +3,7 @@
 // @description  Adds a "Flag and remove" button to all posts that assists in raising text flags and immediately handling them
 // @homepage     https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper
 // @author       Henry Ecker (https://github.com/HenryEcker)
-// @version      0.0.18
+// @version      0.0.19
 // @downloadURL  https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper/raw/master/dist/FlagAndDeleteHelper.user.js
 // @updateURL    https://github.com/HenryEcker-SO-UserScripts/SO-Mod-FlagAndDeleteHelper/raw/master/dist/meta/FlagAndDeleteHelper.meta.js
 //
@@ -279,12 +279,15 @@
             this._setupCommentUI(loadedConfig.enableComment, loadedConfig.commentTextTemplate);
         },
         _assertValidCharacterLengths(flagType) {
-            if (flagType === "mod-flag") {
-                assertValidModFlagTextLength(this.modFlagDetailText.length);
-            } else if (flagType === "plagiarism") {
-                assertValidPlagiarismFlagTextLengths(this.plagiarismFlagOriginalSourceText.length, this.plagiarismFlagDetailText.length);
-            } else {
-                throw new Error("Cannot validate bounds for invalid flag type.");
+            switch (flagType) {
+                case "mod-flag":
+                    assertValidModFlagTextLength(this.modFlagDetailText.length);
+                    break;
+                case "plagiarism":
+                    assertValidPlagiarismFlagTextLengths(this.plagiarismFlagOriginalSourceText.length, this.plagiarismFlagDetailText.length);
+                    break;
+                default:
+                    throw new Error("Cannot validate bounds for invalid flag type.");
             }
             if (this.shouldComment === true) {
                 assertValidCommentTextLength(this.commentText.length);
@@ -458,17 +461,17 @@
 
     function addButtonToPosts() {
         $(".js-post-menu").each((i, n) => {
-            const jsPostMenu = $(n);
-            const parentElement = jsPostMenu.closest("div.question,div.answer");
-            const isDeleted = parentElement.hasClass("deleted-answer");
+            const $jsPostMenu = $(n);
+            const $parentElement = $jsPostMenu.closest("div.question,div.answer");
+            const isDeleted = $parentElement.hasClass("deleted-answer");
             if (isDeleted) {
                 return;
             }
-            const postId = Number(parentElement.attr("data-questionid") ?? parentElement.attr("data-answerid"));
-            const btn = $(`<a href="#" data-postid="${postId}">Flag and remove</a>`);
-            btn.on("click", clickHandler);
-            jsPostMenu.find(">div.s-anchors").append(
-                $('<div class="flex--item"></div>').append(btn)
+            const postId = Number($parentElement.attr("data-questionid") ?? $parentElement.attr("data-answerid"));
+            const $btn = $(`<a href="#" data-postid="${postId}">Flag and remove</a>`);
+            $btn.on("click", clickHandler);
+            $jsPostMenu.find(">div.s-anchors").append(
+                $('<div class="flex--item"></div>').append($btn)
             );
         });
     }
